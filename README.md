@@ -9,7 +9,7 @@ We implement time evolution for the staggered heisenberg model in a static Zeema
 $$H = H_0 + H_D$$
 
 where
-$$H_0 = \sum_{\langle i,j \rangle} (-1)^i \vec{S}_i \cdot \vec{S}_j +\sum_i h_z S_i^z \qquad H_D = {\rm sgn }\Big[{\rm sin \, \omega t}\Big]$$
+$$H_0 = \sum_{\langle i,j \rangle} (-1)^i \vec{S}_i \cdot \vec{S}_j +\sum_i h_z S_i^z \qquad H_D = {\rm sgn }\Big[{\rm sin \, \omega t}\Big]\sum_i \gamma_i S_i^x$$
 
 To do this we have two hamiltonians
 
