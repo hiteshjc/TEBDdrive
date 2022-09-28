@@ -3,7 +3,7 @@
   
 # Square Pulse Heisenberg TEBD
   
-We implement time evolution for the staggered heisenberg model in a static Zeeman field with pulse transverse transverse field using matrix product states and Time Evolution Block Decimation.
+We implement time evolution for the staggered heisenberg model in a static Zeeman field with pulse transverse field using matrix product states and Time Evolution Block Decimation.
  
 
 $$H = H_0 + H_D$$
