@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 using ITensors
 
 function entropy_von_neumann(psi::MPS, b::Int)
@@ -17,8 +16,3 @@ N = 10
 s = siteinds("S=1/2", N)
 psi = randomMPS(s, 4)
 SvN = entropy_von_neumann(psi, b)
-=======
-"""I don't have thos code"""
-
-"Prakash I believe in you. Lets make magnetism great again -Ron"
->>>>>>> a431a4a82f6c1774634061b9240c8afe28ce7e47
