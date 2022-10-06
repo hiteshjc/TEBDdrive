@@ -38,7 +38,6 @@ attributes = ["L","N_tau","sites_and_inital_product_states","bonds_and_Js","site
 
 # file name passed as an argument for this script
 fname = ARGS[1]
-
 # runs function and stores input data as a string literal inside of filedata
 filedata = read_input_file(fname)
 
@@ -99,11 +98,11 @@ for value in filedata
 	end
 	
 	if(value[1]=="maxdim") 
-	global	maxdim = eval(value[2])
+	global	maxdim1 = eval(value[2])
 	end
 	
 	if(value[1]=="cutoff") 
-	global	cutoff = eval(value[2])
+	global	cutoff1 = eval(value[2])
 	end
 	
 	if(value[1]=="sites_and_hzs") 
@@ -156,7 +155,7 @@ Na = L
 N = L
 
 # cutoff
-cutoff = 10^(-14)
+cutoff1 = 10^(-14)
 
 # bond dimension
 #maxdim=200
@@ -381,9 +380,9 @@ for site_and_initial_product_state in sites_and_initial_product_states
 	OP1 =cos(θ)*op("Id", s[i]) -2*im*sin(θ)*op("Sy",s[i])
 	OP2 =(1+cis(α))/2 * op("Id", s[i]) +(1-cis(α))/2 * 2 * op("Sz", s[i])
 
-	global psi0 = apply(OP1,psi0;cutoff,maxdim)
+	global psi0 = apply(OP1,psi0;cutoff1,maxdim1)
 	normalize(psi0)
-	global psi0 = apply(OP2,psi0;cutoff,maxdim)
+	global psi0 = apply(OP2,psi0;cutoff1,maxdim1)
 	normalize(psi0)
 end
 
@@ -433,43 +432,41 @@ for n in 1:N_tau*numkicks
 	println(to)
 
     	global t =dt+ t
-
-	t≈ttotal && break
+    	t≈ttotal && break
 	
 	
                 if n_tau <= N_tau/2
-			global psi1 = apply(gates1, psi1; cutoff,maxdim)
+			global psi1 = apply(gates1, psi1; cutoff1,maxdim1)
 			psi1=normalize(psi1)
 	               end
 
 
                 if n_tau > N_tau/2
- 			global psi1 = apply(gates2, psi1; cutoff,maxdim)
+ 			global psi1 = apply(gates2, psi1; cutoff1,maxdim1)
 			psi1 = normalize(psi1)
                      
                         if n_tau == N_tau
                          	push!(time,t)
-				xxcorr= correlation_matrix(psi1,"Sx","Sx")
-				push!(XXmat,xxcorr)
-				#println("<SᵢˣSⱼˣ> tables")
+				            xxcorr= correlation_matrix(psi1,"Sx","Sx")
+				            push!(XXmat,xxcorr)
+				            #println("<SᵢˣSⱼˣ> tables")
          			       
-				#pretty_table(xxcorr)
-                		#println(" ")
+				            #pretty_table(xxcorr)
+                		        #println(" ")
                 
 
-				magz = expect(psi1,"Sx")
-                		push!(Xmat,magz)
+				            magz = expect(psi1,"Sx")
+                		    push!(Xmat,magz)
 				
-			local Echo = abs2(inner(psi1,psi2))
-			push!(time,t)
-			push!(Prob,Echo)
-        		#ξ=linkdims(psi1)
-			push!(Bonddim, maxlinkdim(psi1))
-			println("t = ","maxbonddim = ", maxlinkdim(psi1))
+			                local Echo = abs2(inner(psi1,psi2))
+			                push!(Prob,Echo)
+        		            #ξ=linkdims(psi1)
+			                push!(Bonddim, maxlinkdim(psi1))
+			                println("t = ","maxbonddim = ", maxlinkdim(psi1))
 
 
-				n_tau = 1
-                                global switch = false
+				            n_tau = 1
+                            global switch = false
                         end
 
                 end
