@@ -12,7 +12,9 @@ function entropy_von_neumann(psi::MPS, b::Int)
   return SvN
 end
 
-N = 10
+N = 4
 s = siteinds("S=1/2", N)
 psi = randomMPS(s, 4)
+b = 2
 SvN = entropy_von_neumann(psi, b)
+@show SvN
