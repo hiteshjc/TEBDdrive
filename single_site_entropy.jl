@@ -1,3 +1,4 @@
+using LinearAlgebra
 using ITensors
 
 function entropy_von_neumann(psi::MPS, b::Int)
@@ -5,7 +6,7 @@ function entropy_von_neumann(psi::MPS, b::Int)
   orthogonalize!(psi, b)
   psidag = dag(psi)
   rho = psi[b]*prime(psidag[b],"Site")
-  S,_ = diagonal(rho) """ replace with correct julia command """
+  S,_ = eigen(rho)
   SvN = 0.0
   for n in 1:dim(S, 1)
     p = S[n,n]
@@ -19,3 +20,4 @@ s = siteinds("S=1/2", N)
 psi = randomMPS(s, 4)
 b = 2
 SvN = entropy_von_neumann(psi, b)
+@show SvN
