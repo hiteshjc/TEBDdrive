@@ -7,6 +7,9 @@ maxdim = 200
 
 include("single_site_entropy.jl")
 
+
+
+
 function singletgenerator(N,entangled_pairs)
 states = []
 	for n in 1:N
@@ -32,6 +35,17 @@ return psi0
 end
 
 
-println(singletgenerator(N,entangled_pairs))
+psi0 = singletgenerator(N,entangled_pairs)
 site = 1 
-println(" S = ", entropy_von_neumann(psi0, site))
+println(" (↑↓ - ↓↑)/√2     S = ", entropy_von_neumann(psi0, site))
+
+states = []
+	for n in 1:N
+        	 push!(states, "Up")
+	end
+
+
+	global psi1= MPS(s,states)
+	
+
+println(" ↑↑     S = ", entropy_von_neumann(psi1, site))

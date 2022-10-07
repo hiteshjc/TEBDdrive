@@ -10,7 +10,9 @@ function entropy_von_neumann(psi::MPS, b::Int)
   SvN = 0.0
   for n in 1:dim(S, 1)
     p = real(S[n,n])
-    SvN -= p * log(p)
+	if p > 10^-14
+	SvN -= p * log(p)
+	end
   end
   return SvN
 end
