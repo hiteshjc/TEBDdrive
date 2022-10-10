@@ -1,12 +1,12 @@
 using ITensors
 cutoff = 10^(-14)
-N =2
-entangled_pairs = [[1,2]]
+N =5
+entangled_pairs = [[2,4]]
 s = siteinds("S=1/2", N; conserve_qns= false)
 maxdim = 200
 
 include("single_site_entropy.jl")
-
+include("two_site_RDM_n_SvN.jl")
 
 
 
