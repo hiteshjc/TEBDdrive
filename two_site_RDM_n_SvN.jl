@@ -2,7 +2,7 @@ using LinearAlgebra
 using ITensors
 
 #input mush have b < c
-function twoSite_entropy_von_neumann(psi::MPS, b::Int, c::Int)
+function two_site_entropy_von_neumann(psi::MPS, b::Int, c::Int)
   if b > c 
 	throw("b = $b must be less than c = $c")
   end
