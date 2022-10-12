@@ -1,7 +1,7 @@
 using ITensors
 cutoff = 10^(-14)
-N =5
-entangled_pairs = [[2,4]]
+N =3
+entangled_pairs = [[1,2]]
 s = siteinds("S=1/2", N; conserve_qns= false)
 maxdim = 200
 
@@ -34,11 +34,17 @@ return psi0
 
 end
 
+#################################################################
+# ONE SITE ENTANGLEMENT MEASUREMENTS
+#
+#################################################################
+
 
 psi0 = singletgenerator(N,entangled_pairs)
-site = 1 
-println(" (↑↓ - ↓↑)/√2     S = ", entropy_von_neumann(psi0, site))
 
+
+println(" (↑₁↓₂ - ↓₁↑₂)/√2     S₁ = ", entropy_von_neumann(psi0, 1))
+println(" (↑₁↓₂ - ↓₁↑₂)/√2     S₂ = ", entropy_von_neumann(psi0, 2))
 states = []
 	for n in 1:N
         	 push!(states, "Up")
@@ -48,4 +54,15 @@ states = []
 	global psi1= MPS(s,states)
 	
 
-println(" ↑↑     S = ", entropy_von_neumann(psi1, site))
+println(" ↑₁↑₂     S₁ = ", entropy_von_neumann(psi1, 1))
+
+
+########################################################
+# TWO SITE ENTANGLEMENT MEASUREMENTS
+#
+########################################################
+
+
+println("(↑₁↓₂↑₃-↓₁↑₂↑₃) / √2       S₁₃ = ",two_site_entropy_von_neumann(psi0,1,3)," should be S₁₃ = ln(1) =0 because ")
+println("(↑₁↓₂↑₃-↓₁↑₂↑₃) / √2       S₁₂ = ",two_site_entropy_von_neumann(psi0,1,2)," should be =  ln 2² = 1.38629436112")
+
