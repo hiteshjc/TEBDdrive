@@ -4,6 +4,7 @@ using TimerOutputs
 #using PyPlot
 #using LaTeXStrings
 using PrettyTables
+using Printf
 
 const to = TimerOutput()
 
@@ -57,6 +58,7 @@ for value in filedata
 
 	if(value[1]=="bonds_and_Js") 
 	global	bonds_and_Js = eval(value[2])
+	println("bonds_and_Js = ",bonds_and_Js) 
 	end
 	
 	if(value[1]=="maxdim") 
@@ -69,23 +71,26 @@ for value in filedata
 	
 	if(value[1]=="sites_and_hzs") 
 	global	sites_and_hzs = eval(value[2])
+	println("sites_and_hzs = ",sites_and_hzs) 
 	end
 
 	if(value[1]=="sites_and_phis") 
 	global	sites_and_phis = eval(value[2])
+	println("sites and phis/2pi = ",sites_and_phis) 
 	end
 	
-	if(value[1]=="tau") 
+	if(value[1]=="tau")
 	global	tau = eval(value[2])
+	println("tau/2pi = ",tau) 
 	end
 
 	
 	if(value[1]=="numkicks")
 	global numkicks = eval(value[2])
+	println("numkicks = ",numkicks) 
 	end
 	
 	if(value[1]=="file_name")
-	println("hello world")
 	global file_name = String(eval(value[2]))
 	end
 
@@ -179,9 +184,7 @@ global psi0 = MPS(s,states)
 println("Bond Dimension = ", linkdims(psi0))
 
 ###############################################
-#
 #  Polarize spins along initial directions
-#  
 ###############################################
 
 for site_and_initial_product_state in sites_and_initial_product_states
@@ -231,11 +234,10 @@ for n in 0:N_tau*numkicks
 	if n%N_tau == 0.0  ## then do measurement 
 		# Echo at t = integer τ
 		local Echo = abs2(inner(psi1,psi2))
-		println("t = ",t," Echo = ", Echo)
 		# ξ is the max bond dim at t = integer τ
 		ξ =  maxlinkdim(psi1)
 		#push!(Bonddim, ξ)
-		println("t = ",t," maxbonddim = ", ξ)
+		@printf("t = %+5.15f Echo = %+5.15f  maxbonddim = %4d \n",t,Echo,ξ)
 		# Sᵢˣ Sⱼˣ
 		#local xxcorr= correlation_matrix(psi1,"Sx","Sx")
 		# Sᵢˣ local observable at t = n τ
@@ -245,8 +247,9 @@ for n in 0:N_tau*numkicks
 		###############################################################	
 		#  Beginning of Entropy Calculation
 		###############################################################
+		println("Site        <Sx>                   <Sy>                <Sz>                   Svn")
 		for σ in 1:N
-			println(σ,"  ",magx[σ],"  ",magy[σ],"  ",magz[σ],"  ",entropy_von_neumann(psi1,σ))
+			@printf("%3d  %+5.15f  %+5.15f  %+5.15f  %+5.15f \n", σ,magx[σ],magy[σ],magz[σ],entropy_von_neumann(psi1,σ))
 		end
 		println(" ") 	
 		###############################################################
