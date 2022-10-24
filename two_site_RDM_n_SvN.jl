@@ -35,3 +35,8 @@ function twoSite_entropy_von_neumann(psi::MPS, b::Int, c::Int)
   end
   return SvN
   end 
+
+# N = 5
+# s = siteinds("S=1/2", N)
+# psi = randomMPS(s, 4)
+# SvN = twoSite_entropy_von_neumann(psi, 2,4)
