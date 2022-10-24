@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 
     for (int t = 1; t <= 10000; ++t)
     {
-        gateTEvol(gates, tstep, tstep, psi, {"Cutoff=", cutoff, "Verbose=", false});
+        gateTEvol(gates, tstep, tstep, psi, {"Cutoff=", cutoff, "Verbose=", false});//"maxDim=",400 //turn on this option if you want to constraint MPS bond dim
 
         double sxt = 0;
 	double syt = 0;
