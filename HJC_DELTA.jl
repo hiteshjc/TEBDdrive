@@ -117,7 +117,7 @@ kick= []
 for site_and_phi in sites_and_phis 
 	i = Int64(site_and_phi[1])
 	phi = 2*π*site_and_phi[2]
-		if phi > 10^(-14)
+		if abs(phi) > 10^(-14)
 			OPKICK = cos(phi/2)*op("Id", s[i])+2*im*sin(phi/2)*op("Sx", s[i])
 			push!(kick, OPKICK)
 		end
@@ -127,7 +127,7 @@ end
 ###############################################################################
 # Set up the hamiltonian and time evolution operator
 ################################################################################ 
-	for j in 1:(N - 1)
+	for j in 1:(N - 1)  # works only for OBC
 
 		local i = Int64(bonds_and_Js[j][1])
 		local ip = Int64(bonds_and_Js[j][2])
@@ -140,29 +140,16 @@ end
 		s1 = s[i]
 		s2 = s[ip]
             
-		hj = Jz* op("Sz", s1) * op("Sz", s2) + J* 1/2 * op("S+", s1) * op("S-", s2) +J * 1/2 * op("S-", s1) * op("S+", s2)- hz*op("Sz",s1)*op("Id",s2)
-
+		if (i==1 && ip==2)
+			hj = Jz* op("Sz", s1) * op("Sz", s2) + J* 1/2 * op("S+", s1) * op("S-", s2) +J * 1/2 * op("S-", s1) * op("S+", s2)- hz*op("Sz",s1)*op("Id",s2) - (0.5*hz)*op("Id",s1)*op("Sz",s2)
+		elseif (i==N-1 && ip==N)
+			hj = Jz* op("Sz", s1) * op("Sz", s2) + J* 1/2 * op("S+", s1) * op("S-", s2) +J * 1/2 * op("S-", s1) * op("S+", s2)- (0.5*hz)*op("Sz",s1)*op("Id",s2) - hz*op("Id",s1)*op("Sz",s2)
+		else
+			hj = Jz* op("Sz", s1) * op("Sz", s2) + J* 1/2 * op("S+", s1) * op("S-", s2) +J * 1/2 * op("S-", s1) * op("S+", s2)- (0.5*hz)*op("Sz",s1)*op("Id",s2) - (0.5*hz)*op("Id",s1)*op("Sz",s2)
+		end
 		Gj = exp(-im * dt/2 * hj)
 		push!(gates, Gj)
        
-	end
-		J=bonds_and_Js[N][3]
-		Jz = bonds_and_Js[N][4]
-		hz = sites_and_hzs[N][2]
-		s1 = s[N]
-        	s2 = s[1]
-
-
-	if periodic == true
-        	hj =Jz * op("Sz", s1) * op("Sz", s2) +J* 1/2 * op("S+", s1) * op("S-", s2) + J* 1/2 * op("S-", s1) * op("S+", s2) - hz*op("Sz",s1)*op("Id",s2)
-       		Gj = exp(-im * dt/2 * hj)
-        	push!(gates, Gj)
-	
-
-	else 
-		hj =  - hz*op("Sz",s1)*op("Id",s2)
-       		Gj = exp(-im * dt/2 * hj)
-        	push!(gates, Gj)
 	end
     
 	append!(gates,reverse(gates))
@@ -231,13 +218,13 @@ for n in 0:N_tau*numkicks
 	##########################################################
 	# at t = integer τ we kick the system. If statement to ensure
 	# we are at an integral multiple of τ
-	if n%N_tau == 0.0  ## then do measurement 
+	if n%N_tau == 0  ## then do measurement 
 		# Echo at t = integer τ
 		local Echo = abs2(inner(psi1,psi2))
 		# ξ is the max bond dim at t = integer τ
 		ξ =  maxlinkdim(psi1)
 		#push!(Bonddim, ξ)
-		@printf("t = %+5.15f Echo = %+5.15f  maxbonddim = %4d \n",t,Echo,ξ)
+		@printf("Kick = %4d t = %+5.15f Echo = %+5.15f  maxbonddim = %4d \n",n/N_tau,t,Echo,ξ)
 		# Sᵢˣ Sⱼˣ
 		#local xxcorr= correlation_matrix(psi1,"Sx","Sx")
 		# Sᵢˣ local observable at t = n τ
@@ -265,7 +252,7 @@ for n in 0:N_tau*numkicks
 	normalize(psi1)		
 	# at t = integer τ we kick the system. If statement to ensure
 	# we are at an integral multiple of τ
-	if (n+1)%N_tau == 0.0
+	if (n+1)%N_tau == 0
 			# kick
 			for foot in kick
 				psi1= apply(foot,psi1;cutoff=cutoff1,maxdim=maxdim1)
