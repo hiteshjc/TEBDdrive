@@ -183,9 +183,9 @@ for site_and_initial_product_state in sites_and_initial_product_states
 	OP1 =cos(θ)*op("Id", s[i]) -2*im*sin(θ)*op("Sy",s[i])
 	OP2 =(1+cis(α))/2 * op("Id", s[i]) +(1-cis(α))/2 * 2 * op("Sz", s[i])
 	global psi0 = apply(OP1,psi0;cutoff=cutoff1,maxdim =maxdim1)
-	normalize(psi0)
-	global psi0 = apply(OP2,psi0;cutoff=cutoff1,maxdim=maxdim1)
-	normalize(psi0)
+	psi0=normalize(psi0)
+	psi0 = apply(OP2,psi0;cutoff=cutoff1,maxdim=maxdim1)
+	psi0=normalize(psi0)
 end
 
 # make two MPSs one which is all X polarized state
@@ -211,6 +211,7 @@ entropies = []
 
 #########################################################
 for n in 0:N_tau*numkicks
+	global psi1=normalize(psi1)
 	global t=n*dt
 	t≈ttotal && break
 	##########################################################
@@ -224,7 +225,7 @@ for n in 0:N_tau*numkicks
 		# ξ is the max bond dim at t = integer τ
 		ξ =  maxlinkdim(psi1)
 		#push!(Bonddim, ξ)
-		@printf("Kick = %4d t = %+5.15f Echo = %+5.15f  maxbonddim = %4d \n",n/N_tau,t,Echo,ξ)
+		@printf("Kick = %4d t = %+5.15f Echo = %+5.15f  <psi1|psi1> = %+5.15f maxbonddim = %4d \n",n/N_tau,t,Echo,abs(inner(psi1,psi1)),ξ)
 		# Sᵢˣ Sⱼˣ
 		#local xxcorr= correlation_matrix(psi1,"Sx","Sx")
 		# Sᵢˣ local observable at t = n τ
@@ -248,15 +249,14 @@ for n in 0:N_tau*numkicks
 	# Time evolution
 	###########################################################
 	# time evolution with H₀ without kick exp(-i Ho dt)	
-	global psi1 = apply(gates, psi1; cutoff = cutoff1,maxdim=maxdim1)
-	normalize(psi1)		
+	psi1 = apply(gates, psi1; cutoff = cutoff1,maxdim=maxdim1)
+	
 	# at t = integer τ we kick the system. If statement to ensure
 	# we are at an integral multiple of τ
 	if (n+1)%N_tau == 0
 			# kick
 			for foot in kick
 				psi1= apply(foot,psi1;cutoff=cutoff1,maxdim=maxdim1)
-				normalize(psi1)
 			end  
 	end
 end
