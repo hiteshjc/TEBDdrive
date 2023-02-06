@@ -17,7 +17,7 @@ function two_site_entropy_von_neumann(psi::MPS, b::Int, c::Int)
   rho = prime(psi[b], lb)*prime(psidag[b],"Site")
   for n in b+1:c-1
 	rho *= psi[n]
-	rho *= psidag[n]
+	rho *= prime(psidag[n],"Link")
   end
 
   #index linking c to c+1
