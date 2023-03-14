@@ -13,7 +13,6 @@ using TimerOutputs
 include("swapFunction.jl")
 
 
-
 function square_pulse_gate_generator(s,N,bonds_and_Js,sites_and_phis,sites_and_hzs,dt)
 
 
@@ -22,18 +21,17 @@ function square_pulse_gate_generator(s,N,bonds_and_Js,sites_and_phis,sites_and_h
     ##########################################################
 
 
-    # gates 1 for magnetic field along -X direction 
+    # gates 1 for magnetic field along -X direction
     gates1 = ITensor[]
 
-    # gates 2 for magnetic field along +X direction 
+    # gates 2 for magnetic field along +X direction
     gates2 = ITensor[]
 
 
     ##########################################################
     # Gates 1 Operator
     ##########################################################
-
-for j in 1:N
+    for j in 1:N
 
             ############################
             # Indices and Couplings
@@ -60,64 +58,63 @@ for j in 1:N
             #################################################
             #      Hamiltonian Construction
             #################################################
-	# OPEN BOUNDARY CONITIONS
-	# Bulk Nearest Neighbor Condition
-	if i+1 == ip || i-1 == ip
-        
-		# Ising couplings Jz SᵢᶻSⱼᶻ
-		hj = Jz*op("Sz",s1)*op("Sz",s2)
+        # OPEN BOUNDARY CONITIONS
+        # Bulk Nearest Neighbor Condition
+        if i+1 == ip || i-1 == ip
 
-		# XY couplings (J Sᵢ⁺Sⱼ⁻ + J Sᵢ⁻Sⱼ⁺)/2
-		hj += J * (1/2) * op("S+",s1) * op("S-",s2) + J * (1/2) * op("S-",s1) * op("S+",s2)
+                # Ising couplings Jz SᵢᶻSⱼᶻ
+                hj = Jz*op("Sz",s1)*op("Sz",s2)
 
-		
-		hj += -hz * (0.5 * op("Sz",s1) * op("Id",s2)+ 0.5 * op("Sz",s2) * op("Id",s1))
-
-		
-		
-		# X pulse (same subtlety as the static Z field)
-		hj += hx * (0.5 * op("Sx", s1) * op("Id", s2) + 0.5 * op("Sx", s2) * op("Id", s1))
-		
+                # XY couplings (J Sᵢ⁺Sⱼ⁻ + J Sᵢ⁻Sⱼ⁺)/2
+                hj += J * (1/2) * op("S+",s1) * op("S-",s2) + J * (1/2) * op("S-",s1) * op("S+",s2)
 
 
-	# OPEN BOUNDARY CONDITION
-	else 
+                hj += -hz * (0.5 * op("Sz",s1) * op("Id",s2)+ 0.5 * op("Sz",s2) * op("Id",s1))
+
+
+
+                # X pulse (same subtlety as the static Z field)
+               hj += hx * op("Sx", s1) * op("Id", s2) 
+
+
+
+        # OPEN BOUNDARY CONDITION
+        else
                 # bring 1 next to L-1 position so that it is next to L
                 local U = swapSequence(s,ip,i)
                 append!(gates1,U)
                 s1 = s[i-1]
                 s2 = s[i]
-		
-		# Ising couplings Jz SᵢᶻSⱼᶻ
-		hj = Jz*op("Sz",s1)*op("Sz",s2)
 
-		# XY couplings (J Sᵢ⁺Sⱼ⁻ + J Sᵢ⁻Sⱼ⁺)/2
-		hj += J * (1/2) * op("S+",s1) * op("S-",s2) + J * (1/2) * op("S-",s1) * op("S+",s2)
+                # Ising couplings Jz SᵢᶻSⱼᶻ
+                hj = Jz*op("Sz",s1)*op("Sz",s2)
 
-		
-		hj += -hz * (0.5 * op("Sz",s1) * op("Id",s2)+ 0.5 * op("Sz",s2) * op("Id",s1))
+                # XY couplings (J Sᵢ⁺Sⱼ⁻ + J Sᵢ⁻Sⱼ⁺)/2
+                hj += J * (1/2) * op("S+",s1) * op("S-",s2) + J * (1/2) * op("S-",s1) * op("S+",s2)
 
-		
-		
-		# X pulse (same subtlety as the static Z field)
-		hj += hx * (0.5 * op("Sx", s1) * op("Id", s2) + 0.5 * op("Sx", s2) * op("Id", s1))
-		
+
+                hj += -hz * (0.5 * op("Sz",s1) * op("Id",s2)+ 0.5 * op("Sz",s2) * op("Id",s1))
+
+
+
+                # X pulse (same subtlety as the static Z field)
+                hj += hx * op("Sx", s1) * op("Id", s2)
+
 
         end
 
-        Gj = exp(-im * (dt/2) * hj)  
+        Gj = exp(-im * (dt/2) * hj)
 
         push!(gates1,Gj)
     end
         append!(gates1, reverse(gates1))
-   
-    
-    
+
+
+
     ##########################################################
     # Gates 2 Operator
     ##########################################################
 
-    
     
     for j in 1:N
 
@@ -146,60 +143,56 @@ for j in 1:N
             #################################################
             #      Hamiltonian Construction
             #################################################
-	# OPEN BOUNDARY CONITIONS
-	# Bulk Nearest Neighbor Condition if i and ip are on the left or on right of each other!
-	if i+1 == ip || i-1 == ip
-        
-		# Ising couplings Jz SᵢᶻSⱼᶻ
-		hj = Jz*op("Sz",s1)*op("Sz",s2)
+        # OPEN BOUNDARY CONITIONS
+        # Bulk Nearest Neighbor Condition if i and ip are on the left or on right of each other!
+        if i+1 == ip || i-1 == ip
 
-		# XY couplings (J Sᵢ⁺Sⱼ⁻ + J Sᵢ⁻Sⱼ⁺)/2
-		hj += J * (1/2) * op("S+",s1) * op("S-",s2) + J * (1/2) * op("S-",s1) * op("S+",s2)
+                # Ising couplings Jz SᵢᶻSⱼᶻ
+                hj = Jz*op("Sz",s1)*op("Sz",s2)
 
-		
-		hj += -hz * (0.5 * op("Sz",s1) * op("Id",s2)+ 0.5 * op("Sz",s2) * op("Id",s1))
-
-		
-		
-		# X pulse (same subtlety as the static Z field)
-		hj += -hx * (0.5 * op("Sx", s1) * op("Id", s2) + 0.5 * op("Sx", s2) * op("Id", s1))
-		
+                # XY couplings (J Sᵢ⁺Sⱼ⁻ + J Sᵢ⁻Sⱼ⁺)/2
+                hj += J * (1/2) * op("S+",s1) * op("S-",s2) + J * (1/2) * op("S-",s1) * op("S+",s2)
 
 
-	# Boundary Nearest Neighbor
-	else 
+                hj += -hz * (0.5 * op("Sz",s1) * op("Id",s2)+ 0.5 * op("Sz",s2) * op("Id",s1))
+
+
+
+                # X pulse (same subtlety as the static Z field)
+                hj += -hx  * op("Sx", s1) * op("Id", s2) 
+            
+else
                 # bring 1 next to L-1 position so that it is next to L
                 local U = swapSequence(s,ip,i)
                 append!(gates2,U)
                 s1 = s[i-1]
                 s2 = s[i]
-		
-		# Ising couplings Jz SᵢᶻSⱼᶻ
-		hj = Jz*op("Sz",s1)*op("Sz",s2)
 
-		# XY couplings (J Sᵢ⁺Sⱼ⁻ + J Sᵢ⁻Sⱼ⁺)/2
-		hj += J * (1/2) * op("S+",s1) * op("S-",s2) + J * (1/2) * op("S-",s1) * op("S+",s2)
+                # Ising couplings Jz SᵢᶻSⱼᶻ
+                hj = Jz*op("Sz",s1)*op("Sz",s2)
 
-		
-		hj += -hz * (0.5 * op("Sz",s1) * op("Id",s2)+ 0.5 * op("Sz",s2) * op("Id",s1))
+                # XY couplings (J Sᵢ⁺Sⱼ⁻ + J Sᵢ⁻Sⱼ⁺)/2
+                hj += J * (1/2) * op("S+",s1) * op("S-",s2) + J * (1/2) * op("S-",s1) * op("S+",s2)
 
-		
-		
-		# X pulse (same subtlety as the static Z field)
-		hj += -hx * (0.5 * op("Sx", s1) * op("Id", s2) + 0.5 * op("Sx", s2) * op("Id", s1))
-		
+
+                hj += -hz * (0.5 * op("Sz",s1) * op("Id",s2)+ 0.5 * op("Sz",s2) * op("Id",s1))
+
+
+
+                # X pulse (same subtlety as the static Z field)
+                hj += -hx * op("Sx", s1) * op("Id", s2) 
+
 
         end
 
-        Gj = exp(-im * (dt/2) * hj)  
+        Gj = exp(-im * (dt/2) * hj)
 
         push!(gates2,Gj)
     end
         append!(gates2, reverse(gates2))
-	return gates2, gates2
+        return gates1, gates2
 
 end
-
 ##########################################################################
 #
 # END OF GATES FUNCTION
