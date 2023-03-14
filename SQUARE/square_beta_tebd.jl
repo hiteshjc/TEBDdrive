@@ -46,6 +46,7 @@ for value in filedata
 	
 	if (value[1]=="N_tau")	
 	global Ntau = eval(value[2])
+	println("Hello World")
 	end
 
 
@@ -116,8 +117,8 @@ println("Calculating parameters from input file...")
 # using user inputs to calculate dt
 
 # Rescaled period of pulse
-tau = tau*2*π
-println("τ rescaled by 2π... ")
+tau = tau
+#println("τ rescaled by 2π... ")
 
 dt = tau/Ntau
 println("calculated TEBD time evolution time step dt = ",dt)
@@ -293,8 +294,8 @@ for n in 1:Ntau*numkicks
 					push!(time,t)
                                         
 					#Measure XX correlations
-					xxcorr= correlation_matrix(psi1,"Sx","Sx")
-                                        push!(XXmat,xxcorr)
+#					xxcorr= correlation_matrix(psi1,"Sx","Sx")
+ #                                       push!(XXmat,xxcorr)
                                         
 					#Measure on site Magnitization
 					magz = expect(psi1,"Sx")
@@ -343,7 +344,7 @@ for n in 1:Ntau*numkicks
 #
 #########################################################################
 
-time = time/(2*pi)
+time = time
 
 
 #file_name = "data_1"
