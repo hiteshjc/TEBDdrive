@@ -1,3 +1,7 @@
+# to run this script
+# julia PLOTscript   filename                                                                                                                                                               System Size
+# julia PLOT_TEBD.jl OPEN_Bhaskarian_pulse_pulse_40_site_1_site_8_output_with_effective_ham_double_S_experiment_1_site_1_kicked_L_8__hz_1_phi_15_tau_0.83442_maxdim_40_numkicks_10_Ntau_100 8
+
 # Annotated 22 Jan 2022
 # 
 # H0:    Time indenpendent Heisenberg
