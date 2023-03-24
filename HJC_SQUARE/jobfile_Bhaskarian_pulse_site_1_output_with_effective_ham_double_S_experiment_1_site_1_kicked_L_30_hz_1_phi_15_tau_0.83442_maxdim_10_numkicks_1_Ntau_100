@@ -1,0 +1,10 @@
+#!/bin/bash -l
+#Batch Queue Script
+#SBATCH --time=14-00:00:00
+#SBATCH -p changlani_q
+#SBATCH --nodes=1 
+ #SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=128G
+export OMP_NUM_THREADS=32 
+julia COMMENT_OUT_PUSH_square_beta_tebd.jl file_Bhaskarian_pulse_site_1_output_with_effective_ham_double_S_experiment_1_site_1_kicked_L_30_hz_1_phi_15_tau_0.83442_maxdim_10_numkicks_1_Ntau_100 > OPEN_pipe_out_Bhaskarian_pulse_site_1_output_with_effective_ham_double_S_experiment_1_site_1_kicked_L_30_hz_1_phi_15_tau_0.83442_maxdim_10_numkicks_1_Ntau_100
